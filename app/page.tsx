@@ -24,6 +24,7 @@ export default function Home() {
   const [answer, setAnswer] = useState("");
   const [loading, setLoading] = useState(false);
   const [movies, setMovies] = useState<MovieData[]>([]);
+  const [model, setModel] = useState("mistralai/mistral-7b-instruct:free");
 
   const handleAskAI = async (q?: string) => {
     const userQuestion = q || question;
@@ -34,9 +35,10 @@ export default function Home() {
     setMovies([]);
     try {
       const res = await axios.post(
-        "https://ai-flix-lfgy.onrender.com/api/ask-hugging-face-ai/",
+        "https://ai-flix-lfgy.onrender.com/api/ask-ai/",
         {
           question: userQuestion,
+          model: model, // send selected model
         }
       );
       setAnswer(res.data.answer);
@@ -85,9 +87,25 @@ export default function Home() {
           Ask AI About Movies 🍿
         </h2>
         <p className="text-gray-400 max-w-xl mb-8">
-          Powered by Hugging Face 🤖
+          This free tool runs on limited servers. For best results, ask short
+          and focused questions like: “Suggest two top comedy movies.”
         </p>
 
+        {/* <div className="flex flex-col sm:flex-row gap-4 mb-6 w-full max-w-2xl">
+          <input
+            type="text"
+            value={question}
+            onChange={(e) => setQuestion(e.target.value)}
+            placeholder="Ask anything about movies..."
+            className="flex-1 px-4 py-3 rounded-md text-white"
+          />
+          <button
+            onClick={() => handleAskAI()}
+            className="bg-red-600 hover:bg-red-700 px-6 py-3 rounded-md text-white"
+          >
+            {loading ? "Thinking..." : "Ask AI"}
+          </button>
+        </div> */}
         <div className="flex flex-col sm:flex-row gap-4 mb-6 w-full max-w-2xl">
           <input
             type="text"
@@ -96,6 +114,18 @@ export default function Home() {
             placeholder="Ask anything about movies..."
             className="flex-1 px-4 py-3 rounded-md text-white"
           />
+          <select
+            value={model}
+            onChange={(e) => setModel(e.target.value)}
+            className="px-3 py-2 rounded-md text-white"
+          >
+            <option value="mistralai/mistral-7b-instruct:free">
+              Mistral 7B (Free)
+            </option>
+            <option value="openchat/openchat-3.5">OpenChat 3.5</option>
+            <option value="gryphe/mythomax-l2-13b">MythoMax L2</option>
+            <option value="meta-llama/llama-3-8b-instruct">LLaMA 3 (8B)</option>
+          </select>
           <button
             onClick={() => handleAskAI()}
             className="bg-red-600 hover:bg-red-700 px-6 py-3 rounded-md text-white"
