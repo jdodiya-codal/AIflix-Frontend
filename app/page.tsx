@@ -91,21 +91,6 @@ export default function Home() {
           and focused questions like: “Suggest two top comedy movies.”
         </p>
 
-        {/* <div className="flex flex-col sm:flex-row gap-4 mb-6 w-full max-w-2xl">
-          <input
-            type="text"
-            value={question}
-            onChange={(e) => setQuestion(e.target.value)}
-            placeholder="Ask anything about movies..."
-            className="flex-1 px-4 py-3 rounded-md text-white"
-          />
-          <button
-            onClick={() => handleAskAI()}
-            className="bg-red-600 hover:bg-red-700 px-6 py-3 rounded-md text-white"
-          >
-            {loading ? "Thinking..." : "Ask AI"}
-          </button>
-        </div> */}
         <div className="flex flex-col sm:flex-row gap-4 mb-6 w-full max-w-2xl">
           <input
             type="text"
@@ -123,8 +108,20 @@ export default function Home() {
               Mistral 7B (Free)
             </option>
             <option value="openchat/openchat-3.5">OpenChat 3.5</option>
+            <option value="anthropic/claude-3-sonnet">Claude 3 Sonnet</option>
             <option value="gryphe/mythomax-l2-13b">MythoMax L2</option>
-            <option value="meta-llama/llama-3-8b-instruct">LLaMA 3 (8B)</option>
+            <option value="meta-llama/llama-4-maverick:free">
+              LLaMA 4 Maverick
+            </option>
+            <option value="deepseek/deepseek-r1:free">DeepSeek R1</option>
+            <option value="deepseek/deepseek-v3-0324:free">DeepSeek V3</option>
+            <option value="google/gemma-7b-it">Gemma 7B</option>
+            <option value="nvidia/llama-3.1-nemotron-nano-8b-v1:free">
+              Nemotron 8B
+            </option>
+            <option value="mistralai/mistral-small-3.1-24b-instruct:free">
+              Mistral Small 24B
+            </option>
           </select>
           <button
             onClick={() => handleAskAI()}
