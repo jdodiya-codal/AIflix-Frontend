@@ -1,103 +1,173 @@
-import Image from "next/image";
+"use client";
+
+import { useState } from "react";
+import axios from "axios";
+import { motion } from "framer-motion";
+
+const suggestions = [
+  "Suggest a top-rated action movie",
+  "Tell me a scary horror film",
+  "What are some AI-themed movies?",
+  "Recommend a feel-good comedy",
+  "Best movies of 2023 so far",
+];
+interface MovieData {
+  title: string;
+  poster: string;
+  release_date: number;
+  rating: number;
+  trailer_url?: string;
+}
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const [question, setQuestion] = useState("");
+  const [answer, setAnswer] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [movies, setMovies] = useState<MovieData[]>([]);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
+  const handleAskAI = async (q?: string) => {
+    const userQuestion = q || question;
+    if (!userQuestion) return;
+
+    setLoading(true);
+    setAnswer("");
+    setMovies([]);
+    try {
+      const res = await axios.post(
+        "https://ai-flix-lfgy.onrender.com/api/ask-hugging-face-ai/",
+        {
+          question: userQuestion,
+        }
+      );
+      setAnswer(res.data.answer);
+      setMovies(res.data.movie_data || []);
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (err) {
+      setAnswer("Something went wrong. Please try again later.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-black text-white font-sans">
+      <nav className="sticky top-0 z-50 bg-black/60 backdrop-blur-sm shadow-sm flex justify-between items-center px-6 py-4">
+        <h1 className="text-2xl font-bold">🎬 AIFlix</h1>
+        <button
+          className="hidden md:inline bg-red-600 px-4 py-2 rounded-md hover:bg-red-700 transition"
+          onClick={() =>
+            document
+              .getElementById("ask-section")
+              ?.scrollIntoView({ behavior: "smooth" })
+          }
+        >
+          Ask AI
+        </button>
+        <div className="space-x-4">
+          <a href="#" className="hover:text-red-400">
+            Movies
           </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
+          <a href="#" className="hover:text-red-400">
+            Reviews
+          </a>
+          <a href="#" className="hover:text-red-400">
+            Contact
           </a>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
+      </nav>
+
+      {/* Hero Section */}
+      <section
+        id="ask-section"
+        className="flex flex-col items-center justify-center px-4 py-24 text-center"
+      >
+        <h2 className="text-4xl md:text-5xl font-bold mb-6">
+          Ask AI About Movies 🍿
+        </h2>
+        <p className="text-gray-400 max-w-xl mb-8">
+          Powered by Hugging Face 🤖
+        </p>
+
+        <div className="flex flex-col sm:flex-row gap-4 mb-6 w-full max-w-2xl">
+          <input
+            type="text"
+            value={question}
+            onChange={(e) => setQuestion(e.target.value)}
+            placeholder="Ask anything about movies..."
+            className="flex-1 px-4 py-3 rounded-md text-white"
           />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+          <button
+            onClick={() => handleAskAI()}
+            className="bg-red-600 hover:bg-red-700 px-6 py-3 rounded-md text-white"
+          >
+            {loading ? "Thinking..." : "Ask AI"}
+          </button>
+        </div>
+
+        {/* Suggestions */}
+        <div className="text-sm text-gray-300 mb-6">
+          <p className="mb-2">Try one of these:</p>
+          <div className="flex flex-wrap justify-center gap-2">
+            {suggestions.map((sug, i) => (
+              <button
+                key={i}
+                onClick={() => handleAskAI(sug)}
+                className="bg-gray-800 hover:bg-gray-700 px-4 py-2 rounded-full text-xs"
+              >
+                {sug}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Response */}
+        {answer && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3 }}
+            className="bg-gray-900 p-6 rounded-md max-w-2xl text-left border border-gray-700"
+          >
+            <h3 className="text-lg font-semibold mb-2">🎯 AI Suggestion</h3>
+            <p className="whitespace-pre-wrap text-gray-200 leading-relaxed">
+              {answer}
+            </p>
+          </motion.div>
+        )}
+        {/* Movie Cards */}
+        {movies.length > 0 && (
+          <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6 mt-6 max-w-6xl w-full">
+            {movies.map((movie, idx) => (
+              <div
+                key={idx}
+                className="bg-gray-800 rounded-lg overflow-hidden shadow-md"
+              >
+                <img
+                  src={movie.poster}
+                  alt={movie.title}
+                  className="w-full h-72 object-cover"
+                />
+                <div className="p-4">
+                  <h4 className="text-lg font-semibold mb-1">{movie.title}</h4>
+                  <p className="text-sm text-gray-400 mb-2">
+                    {movie.release_date} • ⭐ {movie.rating}
+                  </p>
+                  {movie.trailer_url && (
+                    <a
+                      href={movie.trailer_url}
+                      target="_blank"
+                      className="inline-block text-red-400 hover:underline text-sm"
+                      rel="noopener noreferrer"
+                    >
+                      Watch Trailer
+                    </a>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </section>
     </div>
   );
 }
