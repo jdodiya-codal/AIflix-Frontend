@@ -115,7 +115,7 @@ export default function Home() {
             </option>
             <option value="deepseek/deepseek-r1:free">DeepSeek R1</option>
             <option value="deepseek/deepseek-v3-0324:free">DeepSeek V3</option>
-            <option value="google/gemma-7b-it">Gemma 7B</option>
+            <option value="google/gemma-3-27b-it:free">Gemini 29B</option>
             <option value="nvidia/llama-3.1-nemotron-nano-8b-v1:free">
               Nemotron 8B
             </option>
