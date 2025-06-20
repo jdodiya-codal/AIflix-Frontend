@@ -66,10 +66,10 @@ export default function Home() {
           Ask AI
         </button>
         <div className="space-x-4">
-          <a href="#" className="hover:text-red-400">
+          <a href="/movies" className="hover:text-red-400">
             Movies
           </a>
-          <a href="#" className="hover:text-red-400">
+          <a href="/reviews" className="hover:text-red-400">
             Reviews
           </a>
           <a href="#" className="hover:text-red-400">
